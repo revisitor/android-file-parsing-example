@@ -4,9 +4,9 @@ import android.content.Context
 import com.google.gson.Gson
 
 class ContactRepository(applicationContext: Context) {
-    private val contacts: List<Contact> = applicationContext.assets.run {
-        val inputStream = open("data.json")
-        val json: String = inputStream.bufferedReader().use { it.readText() }
+    private val contacts: List<Contact> = applicationContext.assets.use {
+        val inputStream = it.open("data.json")
+        val json: String = inputStream.bufferedReader().use { reader -> reader.readText() }
         Gson().fromJson(json, Array<Contact>::class.java).toList()
     }
 
