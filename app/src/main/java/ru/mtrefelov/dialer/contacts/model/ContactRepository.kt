@@ -3,9 +3,7 @@ package ru.mtrefelov.dialer.contacts.model
 import com.google.gson.Gson
 
 class ContactRepository(contactsJsonArray: String) {
-    private val contacts: List<Contact> = Gson()
-        .fromJson(contactsJsonArray, Array<Contact>::class.java)
-        .toList()
+    private val contacts = Gson().fromJson(contactsJsonArray, Array<Contact>::class.java).toList()
 
     fun findAll() = contacts.toList()
 

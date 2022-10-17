@@ -13,7 +13,7 @@ class ContactViewHolder(root: View) : RecyclerView.ViewHolder(root) {
     private val typeText: TextView = root.findViewById(R.id.textview_type)
 
     fun bind(contact: Contact) {
-        with(contact) {
+        contact.run {
             nameText.text = name
             phoneText.text = phone
             typeText.text = type
