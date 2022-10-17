@@ -16,7 +16,7 @@
         android:theme="@style/Theme.MyDialer"
         tools:targetApi="33">
         <activity
-            android:name=".view.activity.MainActivity"
+            android:name=".contacts.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
