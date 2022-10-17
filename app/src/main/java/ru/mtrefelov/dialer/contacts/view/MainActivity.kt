@@ -64,4 +64,9 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
         contactRecyclerView.adapter?.notifyDataSetChanged()
     }
+
+    override fun onDestroy() {
+        presenter.onDestroy()
+        super.onDestroy()
+    }
 }
