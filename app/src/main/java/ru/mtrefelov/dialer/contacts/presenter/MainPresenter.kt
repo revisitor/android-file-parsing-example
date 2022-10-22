@@ -8,16 +8,19 @@ class MainPresenter(view: MainContract.View, contactsJsonArray: String) : MainCo
     private var view: MainContract.View? = view
 
     override fun onViewCreated() {
-        view?.run {
+        view!!.run {
             val contacts = repository.findAll()
             setContacts(contacts)
         }
     }
 
-    override fun onSearchButtonClicked() {
-        view?.run {
-            val query = getSearchQuery()
-            val contacts = repository.findByOccurrence(query)
+    override fun onSearchQueryChanged() {
+        view!!.run {
+            val contacts = with(repository) {
+                val query = getSearchQuery()
+                if (query.isNotEmpty()) findByOccurrence(query) else findAll()
+            }
+
             setContacts(contacts)
         }
     }

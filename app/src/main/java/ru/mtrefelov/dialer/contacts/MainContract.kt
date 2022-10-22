@@ -6,11 +6,12 @@ import ru.mtrefelov.dialer.contacts.model.Contact
 interface MainContract {
     interface Presenter : BasePresenter {
         fun onViewCreated()
-        fun onSearchButtonClicked()
+        fun onSearchQueryChanged()
     }
 
     interface View : BaseView<Presenter> {
         fun getSearchQuery(): CharSequence
-        fun setContacts(contacts: Collection<Contact>)
+        fun setContacts(contacts: List<Contact>)
+        fun openDialer(contact: Contact)
     }
 }

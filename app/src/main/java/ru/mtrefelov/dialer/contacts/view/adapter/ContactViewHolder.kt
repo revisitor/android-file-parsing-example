@@ -1,4 +1,4 @@
-package ru.mtrefelov.dialer.contacts.view
+package ru.mtrefelov.dialer.contacts.view.adapter
 
 import android.view.View
 import android.widget.TextView
@@ -13,7 +13,7 @@ class ContactViewHolder(root: View) : RecyclerView.ViewHolder(root) {
     private val typeText: TextView = root.findViewById(R.id.textview_type)
 
     fun bind(contact: Contact) {
-        contact.run {
+        with(contact) {
             nameText.text = name
             phoneText.text = phone
             typeText.text = type

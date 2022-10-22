@@ -7,9 +7,12 @@ class ContactRepository(contactsJsonArray: String) {
 
     fun findAll() = contacts.toList()
 
-    fun findByOccurrence(text: CharSequence) = if (text.isNotEmpty()) {
-        contacts.filter { it.containsText(text) }
-    } else {
-        findAll()
+    fun findByOccurrence(text: CharSequence) = contacts.filter {
+        it.containsText(text)
+    }
+
+    private fun Contact.containsText(text: CharSequence): Boolean {
+        val ignoreCase = true
+        return name.contains(text, ignoreCase) || type.contains(text, ignoreCase)
     }
 }
