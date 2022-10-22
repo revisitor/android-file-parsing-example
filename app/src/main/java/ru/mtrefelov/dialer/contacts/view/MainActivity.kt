@@ -1,6 +1,8 @@
 package ru.mtrefelov.dialer.contacts.view
 
-import android.content.*
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.widget.EditText
@@ -17,13 +19,6 @@ import ru.mtrefelov.dialer.contacts.presenter.MainPresenter
 import ru.mtrefelov.dialer.contacts.view.adapter.*
 
 class MainActivity : AppCompatActivity(), MainContract.View {
-    private lateinit var searchText: EditText
-    private lateinit var contactRecyclerView: RecyclerView
-    private lateinit var contactAdapter: ContactAdapter
-    private lateinit var toolbar: Toolbar
-
-    private lateinit var presenter: MainContract.Presenter
-
     private val activityContext: Context = this
 
     private val contactClickListener = object : ContactClickListener {
@@ -31,6 +26,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
             openDialer(contact)
         }
     }
+
+    private lateinit var searchToolbar: Toolbar
+    private lateinit var searchText: EditText
+    private lateinit var contactRecyclerView: RecyclerView
+    private lateinit var contactAdapter: ContactAdapter
+    private lateinit var searchFilterPreference: SharedPreferences
+
+    private lateinit var presenter: MainContract.Presenter
 
     override fun openDialer(contact: Contact) {
         val phoneNumber = Uri.parse("tel:${contact.phone}")
@@ -42,25 +45,42 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        contactRecyclerView = findViewById<RecyclerView>(R.id.recyclerview).apply {
-            adapter = ContactAdapter(activityContext, contactClickListener).also {
-                contactAdapter = it
+        contactRecyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+            .apply {
+                adapter = ContactAdapter(activityContext, contactClickListener)
+                layoutManager = LinearLayoutManager(activityContext)
             }
 
-            layoutManager = LinearLayoutManager(activityContext)
-            setContacts(mutableListOf())
-        }
+        contactAdapter = contactRecyclerView.adapter as ContactAdapter
 
-        toolbar = findViewById<Toolbar>(R.id.search_toolbar).also(::setSupportActionBar)
-
-        searchText = findViewById<EditText>(R.id.search_text).apply {
-            addTextChangedListener {
-                presenter.onSearchQueryChanged()
-            }
-        }
+        searchToolbar = findViewById<Toolbar>(R.id.search_toolbar)
+            .also { setSupportActionBar(it) }
 
         setPresenter(MainPresenter(this, getRawContactsJson()))
+
+        searchFilterPreference = getPreferences(Context.MODE_PRIVATE)
+
+        searchText = findViewById<EditText>(R.id.search_text)
+            .apply {
+                searchFilterPreference.getSearchFilter()?.let { setText(it) }
+                addTextChangedListener {
+                    searchFilterPreference.saveSearchFilter(it.toString())
+                    presenter.onSearchQueryChanged()
+                }
+            }
+
+
         presenter.onViewCreated()
+    }
+
+    private fun SharedPreferences.getSearchFilter(): String? {
+        val preferenceKey = resources.getString(R.string.preference_search_filter)
+        return getString(preferenceKey, "")
+    }
+
+    private fun SharedPreferences.saveSearchFilter(searchFilter: String) {
+        val preferenceKey = resources.getString(R.string.preference_search_filter)
+        edit().putString(preferenceKey, searchFilter).apply()
     }
 
     private fun getRawContactsJson(): String {
@@ -75,7 +95,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         this.presenter = presenter
     }
 
-    override fun getSearchQuery(): CharSequence = searchText.text.trim()
+    override fun getSearchQuery() = searchText.text.trim()
 
     override fun setContacts(contacts: List<Contact>) {
         contactAdapter.submitList(contacts)
