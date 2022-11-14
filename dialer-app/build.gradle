@@ -1,0 +1,52 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'ru.mtrefelov.dialer'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "ru.mtrefelov.dialer"
+        minSdk 27
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    buildToolsVersion '33.0.0'
+}
+
+dependencies {
+    implementation project(path: ':dialer-core')
+    implementation project(path: ':dialer-data')
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.fragment:fragment-ktx:1.5.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.7.0'
+
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    // TODO: use Moshi
+    // implementation "com.squareup.moshi:moshi-kotlin:1.14.0"
+    implementation 'com.google.code.gson:gson:2.10'
+}
